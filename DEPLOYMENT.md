@@ -80,18 +80,41 @@ All files are already in your GitHub repo.
 ## Environment Variables
 You'll need to set these environment variables in both Render services:
 
-### For Main App:
-| Variable           | Description                                      |
-|--------------------|--------------------------------------------------|
-| `SECRET_KEY`       | Random secret string for Flask                   |
-| `GEMINI_API_KEY`   | (Optional) Your Google Gemini API key            |
-| `DATABASE_URL`     | PostgreSQL connection string                     |
+### For Main CULTIA App:
+| Variable           | Required? | Description                                      |
+|--------------------|-----------|--------------------------------------------------|
+| `SECRET_KEY`       | ✅ Yes    | Random secret string for Flask session security  |
+| `DATABASE_URL`     | ✅ Yes    | PostgreSQL connection string                     |
+| `GEMINI_API_KEY`   | ❌ No     | (Optional) Your Google Gemini API key for AI features |
 
 ### For Admin Panel:
-| Variable           | Description                                      |
-|--------------------|--------------------------------------------------|
-| `SECRET_KEY`       | Random secret string for Flask                   |
-| `DATABASE_URL`     | PostgreSQL connection string                     |
+| Variable           | Required? | Description                                      |
+|--------------------|-----------|--------------------------------------------------|
+| `SECRET_KEY`       | ✅ Yes    | Random secret string for Flask session security  |
+| `DATABASE_URL`     | ✅ Yes    | PostgreSQL connection string                     |
+
+---
+
+## How to Generate a SECRET_KEY
+You can generate a secure SECRET_KEY using Python:
+```python
+import secrets
+print(secrets.token_hex(32))
+```
+
+Or use an online generator like https://www.random.org/strings/ (generate a long random string)
+
+---
+
+## Example DATABASE_URL Format
+For a local PostgreSQL database:
+```
+postgresql://username:password@localhost:5432/database_name
+```
+
+For Render's PostgreSQL:
+You'll get the full DATABASE_URL from your Render PostgreSQL database dashboard!
+
 
 ---
 
