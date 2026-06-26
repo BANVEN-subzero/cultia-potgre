@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR Test</title>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+</head>
+<body>
+    <h1>AR Test Page</h1>
+    <model-viewer 
+        id="testViewer"
+        src="https://modelviewer.dev/shared-assets/models/Astronaut.glb" 
+        ios-src="https://modelviewer.dev/shared-assets/models/Astronaut.usdz" 
+        alt="Test Model" 
+        camera-controls 
+        auto-rotate 
+        ar 
+        ar-modes="webxr scene-viewer quick-look" 
+        style="width:500px; height:400px;">
+        <button slot="ar-button" style="font-size:20px; padding:10px 20px; background:green; color:white; border:none; border-radius:10px; cursor:pointer;">
+            Launch AR
+        </button>
+    </model-viewer>
+    <br><br>
+    <button id="testBtn" style="font-size:20px; padding:10px 20px; background:blue; color:white; border:none; border-radius:10px; cursor:pointer;" onclick="testAR()">
+        Test AR Button (Manual Call)
+    </button>
+
+    <script type="module">
+        console.log('Test page loaded');
+        
+        function testAR() {
+            console.log('testAR() called');
+            const viewer = document.getElementById('testViewer');
+            console.log('viewer element:', viewer);
+            console.log('typeof activateAR:', typeof viewer.activateAR);
+            
+            if (viewer && viewer.activateAR) {
+                viewer.activateAR();
+            } else {
+                alert('activateAR not available');
+            }
+        }
+        
+        // Expose globally
+        window.testAR = testAR;
+        
+        // Test button click
+        document.getElementById('testBtn').addEventListener('click', testAR);
+        
+        console.log('Test listeners attached');
+    </script>
+</body>
+</html>

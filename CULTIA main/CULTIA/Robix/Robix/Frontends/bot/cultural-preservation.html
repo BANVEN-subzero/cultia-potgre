@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cultural Preservation - CULTIA</title>
+    <link rel="icon" type="image/png" href="../img/top.png">
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- AOS Animations -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-green: #2d5a27;
+            --bg-light: #fdfaf5;
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-light);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .stat-card {
+            background: white;
+            border: none;
+            border-radius: 25px;
+            padding: 1.5rem;
+            transition: var(--transition-smooth);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 25px;
+            padding: 1.5rem;
+            transition: var(--transition-smooth);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .content-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .btn-modern {
+            border-radius: 15px;
+            padding: 12px 25px;
+            font-weight: 600;
+            transition: var(--transition-smooth);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-modern:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar Placeholder -->
+    <div id="sidebar-container"></div>
+
+    <div class="main-content">
+        <!-- Header Placeholder -->
+        <div id="header-container"></div>
+
+        <div class="container-fluid px-5 py-5">
+            <!-- Hero Section -->
+            <section class="mb-5" data-aos="fade-up">
+                <h1 class="display-4 fw-bold mb-3">
+                    <i class="fas fa-landmark text-primary me-2"></i>
+                    Cultural Heritage Preservation
+                </h1>
+                <p class="lead text-muted">Help preserve cultural artifacts, stories, and traditions for future generations.</p>
+            </section>
+
+            <!-- Upload Artifact Section -->
+            <div class="row g-4 mb-5">
+                <div class="col-lg-6" data-aos="fade-right">
+                    <div class="content-card">
+                        <h3 class="fw-bold mb-4">
+                            <i class="fas fa-camera text-primary me-2"></i>
+                            Digitize an Artifact
+                        </h3>
+                        <form id="artifactForm">
+                            <div class="mb-4">
+                                <label for="artifactName" class="form-label">Artifact Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="artifactName" placeholder="e.g., Traditional Mask" required>
+                            </div>
+                            <div class="mb-4">
+                                <label for="artifactTribe" class="form-label">Tribe/Community</label>
+                                <input type="text" class="form-control" id="artifactTribe" placeholder="e.g., Bamileke">
+                            </div>
+                            <div class="mb-4">
+                                <label for="artifactDescription" class="form-label">Description <span class="text-danger">*</span></label>
+                                <textarea class="form-control" id="artifactDescription" rows="4" placeholder="Describe the artifact, its history, and cultural significance..." required></textarea>
+                            </div>
+                            <div class="mb-4">
+                                <label for="digitizationMethod" class="form-label">Digitization Method</label>
+                                <select class="form-select" id="digitizationMethod" required>
+                                    <option value="photo">Photograph</option>
+                                    <option value="3dscan">3D Scan</option>
+                                    <option value="audio">Audio Recording</option>
+                                    <option value="video">Video</option>
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <label for="artifactFile" class="form-label">Artifact File <span class="text-danger">*</span></label>
+                                <input type="file" class="form-control" id="artifactFile" accept=".jpg,.jpeg,.png,.mp3,.wav,.mp4,.mov,.glb,.gltf" required>
+                                <small class="text-muted">Supported formats: JPG, PNG, MP3, WAV, MP4, MOV, GLB, GLTF</small>
+                            </div>
+                            <button type="submit" class="btn btn-modern btn-primary w-100">
+                                <i class="fas fa-upload me-2"></i> Submit for Preservation
+                            </button>
+                        </form>
+                        <div id="artifactMessage" class="mt-4"></div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6" data-aos="fade-left">
+                    <div class="row g-4">
+                        <div class="col-12">
+                            <div class="stat-card">
+                                <div class="stat-icon bg-primary bg-opacity-10 text-primary mb-3">
+                                    <i class="fas fa-boxes"></i>
+                                </div>
+                                <h6 class="text-muted mb-1">Total Artifacts</h6>
+                                <h3 class="fw-bold mb-0" id="totalArtifacts">0</h3>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="stat-card">
+                                <div class="stat-icon bg-success bg-opacity-10 text-success mb-3">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <h6 class="text-muted mb-1">Verified Artifacts</h6>
+                                <h3 class="fw-bold mb-0" id="verifiedArtifacts">0</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Artifacts Gallery -->
+            <section class="mb-5" data-aos="fade-up">
+                <h3 class="fw-bold mb-4">
+                    <i class="fas fa-images text-success me-2"></i>
+                    Digitized Artifacts Gallery
+                </h3>
+                <div id="artifactsGallery" class="row g-4">
+                    <div class="col-12 text-center py-4 text-muted">
+                        <i class="fas fa-spinner fa-spin d-block fs-3 mb-2"></i>
+                        Loading artifacts...
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- AOS Animations JS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load Sidebar
+            fetch('includes/sidebar.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('sidebar-container').innerHTML = data;
+                    const currentPage = window.location.pathname.split("/").pop();
+                    const activeLink = document.querySelector(`.nav-link[href="${currentPage}"]`);
+                    if (activeLink) activeLink.closest('.nav-item').classList.add('active');
+                    
+                    const sidebarToggle = document.getElementById('sidebarToggle');
+                    const sidebar = document.getElementById('sidebar');
+                    if(sidebarToggle && sidebar) {
+                        sidebarToggle.addEventListener('click', () => sidebar.classList.toggle('show'));
+                    }
+                });
+
+            // Load Header
+            fetch('includes/header.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('header-container').innerHTML = data.replace('{{PAGE_TITLE}}', 'Cultural Preservation');
+                    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+                    if(mobileMenuBtn) {
+                        mobileMenuBtn.addEventListener('click', () => document.getElementById('sidebar').classList.toggle('show'));
+                    }
+                });
+
+            // Initialize AOS
+            AOS.init({
+                duration: 800,
+                once: true
+            });
+
+            // Load artifacts
+            loadArtifacts();
+
+            // Handle artifact form submit
+            const artifactForm = document.getElementById('artifactForm');
+            artifactForm.addEventListener('submit', handleArtifactSubmit);
+        });
+
+        async function loadArtifacts() {
+            const gallery = document.getElementById('artifactsGallery');
+            const totalEl = document.getElementById('totalArtifacts');
+            const verifiedEl = document.getElementById('verifiedArtifacts');
+            
+            try {
+                const response = await fetch('/api/artifacts', { credentials: 'include' });
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success) {
+                        const artifacts = data.artifacts;
+                        
+                        totalEl.textContent = artifacts.length;
+                        verifiedEl.textContent = artifacts.length;
+                        
+                        if (artifacts.length === 0) {
+                            gallery.innerHTML = `
+                                <div class="col-12 text-center py-4 text-muted">
+                                    <i class="fas fa-inbox d-block fs-3 mb-2 opacity-50"></i>
+                                    No artifacts digitized yet. Be the first!
+                                </div>
+                            `;
+                            return;
+                        }
+                        
+                        gallery.innerHTML = artifacts.map(artifact => `
+                            <div class="col-lg-4 col-md-6">
+                                <div class="content-card">
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <h5 class="fw-bold mb-0">${artifact.name}</h5>
+                                        <span class="badge bg-success"><i class="fas fa-check-circle"></i> Verified</span>
+                                    </div>
+                                    ${artifact.tribe ? `<p class="text-muted mb-2"><i class="fas fa-users me-1"></i>${artifact.tribe}</p>` : ''}
+                                    <p class="text-muted mb-3">${artifact.description || 'No description available'}</p>
+                                    <div class="mb-3">
+                                        <span class="badge bg-light text-dark">
+                                            <i class="fas fa-camera me-1"></i>${artifact.method}
+                                        </span>
+                                    </div>
+                                    ${artifact.file_path ? `
+                                        <div class="mt-3">
+                                            ${artifact.method === 'photo' ? `
+                                                <img src="/${artifact.file_path}" class="img-fluid rounded" alt="${artifact.name}">
+                                            ` : artifact.method === 'video' ? `
+                                                <video controls class="w-100 rounded">
+                                                    <source src="/${artifact.file_path}">
+                                                </video>
+                                            ` : artifact.method === 'audio' ? `
+                                                <audio controls class="w-100">
+                                                    <source src="/${artifact.file_path}">
+                                                </audio>
+                                            ` : `
+                                                <a href="/${artifact.file_path}" class="btn btn-primary btn-sm" download>
+                                                    <i class="fas fa-download me-1"></i> Download File
+                                                </a>
+                                            `}
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        `).join('');
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading artifacts:', error);
+                gallery.innerHTML = `
+                    <div class="col-12 text-center py-4 text-muted">
+                        <i class="fas fa-exclamation-circle d-block fs-3 mb-2 text-danger opacity-50"></i>
+                        Couldn't load artifacts. Please try again.
+                    </div>
+                `;
+            }
+        }
+
+        async function handleArtifactSubmit(e) {
+            e.preventDefault();
+            const messageDiv = document.getElementById('artifactMessage');
+            const submitBtn = e.target.querySelector('button');
+            
+            submitBtn.disabled = true;
+            messageDiv.innerHTML = '';
+            
+            const name = document.getElementById('artifactName').value;
+            const tribe = document.getElementById('artifactTribe').value;
+            const description = document.getElementById('artifactDescription').value;
+            const method = document.getElementById('digitizationMethod').value;
+            const fileInput = document.getElementById('artifactFile');
+            
+            if (!fileInput.files.length) {
+                messageDiv.innerHTML = '<div class="alert alert-danger rounded-pill text-center fw-bold"><i class="fas fa-exclamation-circle me-2"></i>Please select a file to upload</div>';
+                submitBtn.disabled = false;
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('tribe', tribe);
+            formData.append('description', description);
+            formData.append('method', method);
+            formData.append('file', fileInput.files[0]);
+            
+            try {
+                const response = await fetch('/api/artifacts', {
+                    method: 'POST',
+                    credentials: 'include',
+                    body: formData
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success) {
+                        messageDiv.innerHTML = '<div class="alert alert-success rounded-pill text-center fw-bold"><i class="fas fa-check-circle me-2"></i>' + data.message + '</div>';
+                        e.target.reset();
+                        loadArtifacts();
+                    }
+                } else {
+                    const data = await response.json();
+                    messageDiv.innerHTML = '<div class="alert alert-danger rounded-pill text-center fw-bold"><i class="fas fa-exclamation-circle me-2"></i>' + (data.message || 'Error') + '</div>';
+                }
+            } catch (error) {
+                console.error('Error submitting artifact:', error);
+                messageDiv.innerHTML = '<div class="alert alert-danger rounded-pill text-center fw-bold"><i class="fas fa-exclamation-circle me-2"></i>Error submitting artifact</div>';
+            } finally {
+                submitBtn.disabled = false;
+            }
+        }
+    </script>
+</body>
+
+</html>

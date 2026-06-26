@@ -1,0 +1,523 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}Settings{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="header-title">
+        <h1>Settings</h1>
+        <p>Configure your application settings</p>
+    </div>
+</div>
+
+<div class="settings-container">
+    <div class="settings-sidebar">
+        <ul class="settings-menu">
+            <li class="active" data-tab="general">
+                <i class="fas fa-cog"></i> General
+            </li>
+            <li data-tab="appearance">
+                <i class="fas fa-paint-brush"></i> Appearance
+            </li>
+            <li data-tab="email">
+                <i class="fas fa-envelope"></i> Email
+            </li>
+            <li data-tab="security">
+                <i class="fas fa-shield-alt"></i> Security
+            </li>
+            <li data-tab="notifications">
+                <i class="fas fa-bell"></i> Notifications
+            </li>
+            <li data-tab="backup">
+                <i class="fas fa-database"></i> Backup & Restore
+            </li>
+            <li data-tab="advanced">
+                <i class="fas fa-sliders-h"></i> Advanced
+            </li>
+        </ul>
+    </div>
+    
+    <div class="settings-content">
+        <!-- General Settings Tab -->
+        <div class="settings-tab active" id="general-tab">
+            {% include 'admin/partials/settings/general.html' %}
+        </div>
+        
+        <div class="settings-tab" id="appearance-tab"></div>
+        <div class="settings-tab" id="email-tab"></div>
+        <div class="settings-tab" id="security-tab"></div>
+        <div class="settings-tab" id="notifications-tab"></div>
+        <div class="settings-tab" id="backup-tab"></div>
+        <div class="settings-tab" id="advanced-tab"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.settings-container {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.settings-sidebar {
+    width: 250px;
+    flex-shrink: 0;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    padding: 1rem 0;
+}
+
+.settings-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.settings-menu li {
+    padding: 0.75rem 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: all 0.2s ease;
+    color: #5c6b7b;
+    font-weight: 500;
+}
+
+.settings-menu li:hover {
+    background-color: #f8f9fa;
+    color: #2c3e50;
+}
+
+.settings-menu li.active {
+    background-color: #e3f2fd;
+    color: #1976d2;
+    border-left: 3px solid #1976d2;
+}
+
+.settings-menu li i {
+    width: 20px;
+    text-align: center;
+}
+
+.settings-content {
+    flex: 1;
+}
+
+/* Tab visibility styles */
+.settings-tab {
+    display: none;
+}
+
+.settings-tab.active {
+    display: block;
+    animation: fadeIn 0.2s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    margin-bottom: 1.5rem;
+}
+
+.card-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+.card-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: #2c3e50;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease;
+}
+
+.form-control:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    outline: none;
+}
+
+textarea.form-control {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.form-actions {
+    display: flex;
+    gap: 0.75rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+    margin-top: 1.5rem;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn i {
+    margin-right: 0.5rem;
+}
+
+.btn-primary {
+    background-color: #3498db;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+}
+
+.btn-secondary {
+    background-color: #95a5a6;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #7f8c8d;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .settings-container {
+        flex-direction: column;
+    }
+    
+    .settings-sidebar {
+        width: 100%;
+    }
+    
+    .settings-menu {
+        display: flex;
+        overflow-x: auto;
+        padding: 0.5rem 0;
+    }
+    
+    .settings-menu li {
+        white-space: nowrap;
+        border-left: none;
+        border-bottom: 2px solid transparent;
+    }
+    
+    .settings-menu li.active {
+        border-left: none;
+        border-bottom: 2px solid #1976d2;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Tab switching functionality
+    const menuItems = document.querySelectorAll('.settings-menu li');
+    const tabs = document.querySelectorAll('.settings-tab');
+    
+    menuItems.forEach(item => {
+        item.addEventListener('click', function() {
+            const tabId = this.getAttribute('data-tab');
+            
+            // Update active menu item
+            menuItems.forEach(menuItem => menuItem.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Show corresponding tab
+            tabs.forEach(tab => {
+                if (tab.id === `${tabId}-tab`) {
+                    tab.classList.add('active');
+                    // Load tab content dynamically
+                    loadTabContent(tabId);
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+        });
+    });
+    
+    // Function to load tab content dynamically
+    function loadTabContent(tabId) {
+        const tabContent = document.getElementById(`${tabId}-tab`);
+        
+        // Only load content if it hasn't been loaded yet
+        if (tabContent && !tabContent.dataset.loaded) {
+            fetch(`/admin/settings/${tabId}`)
+                .then(response => response.text())
+                .then(html => {
+                    tabContent.innerHTML = html;
+                    tabContent.dataset.loaded = true;
+                    
+                    // Initialize backup tab features if it's the backup tab
+                    if (tabId === 'backup') {
+                        initializeBackupFeatures();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading tab content:', error);
+                    tabContent.innerHTML = `
+                        <div class="alert alert-danger">
+                            Error loading ${tabId} settings. Please try again.
+                        </div>
+                    `;
+                });
+        }
+    }
+    
+    // Handle form submissions
+    document.addEventListener('submit', function(e) {
+        if (e.target.matches('form')) {
+            e.preventDefault();
+            const form = e.target;
+            const formData = new FormData(form);
+            const jsonData = {};
+            
+            formData.forEach((value, key) => {
+                if (form.querySelector(`[name="${key}"]`).type === 'checkbox') {
+                    jsonData[key] = form.querySelector(`[name="${key}"]`).checked;
+                } else {
+                    jsonData[key] = value;
+                }
+            });
+            
+            fetch('/admin/api/settings', {
+                method: 'POST',
+                body: JSON.stringify(jsonData),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showAlert('success', data.message || 'Settings saved successfully!');
+                } else {
+                    showAlert('danger', data.message || 'Error saving settings. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('danger', 'An error occurred. Please try again.');
+            });
+        }
+    });
+    
+    // Show alert message
+    function showAlert(type, message) {
+        const alert = document.createElement('div');
+        alert.className = `alert alert-${type} alert-dismissible fade show`;
+        alert.role = 'alert';
+        alert.innerHTML = `
+            ${message}
+            <button type="button" class="btn-close" onclick="this.parentElement.remove()">×</button>
+        `;
+        
+        // Add alert to the top of the settings content
+        const settingsContent = document.querySelector('.settings-content');
+        settingsContent.insertBefore(alert, settingsContent.firstChild);
+        
+        // Auto-dismiss after 5 seconds
+        setTimeout(() => {
+            alert.remove();
+        }, 5000);
+    }
+    
+    // Initialize backup tab features
+    function initializeBackupFeatures() {
+        // Load existing backups
+        loadBackups();
+        
+        // Create backup button click handler
+        const createBackupBtn = document.getElementById('create-backup-btn');
+        if (createBackupBtn) {
+            createBackupBtn.addEventListener('click', function() {
+                const btn = this;
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating...';
+                
+                fetch('/admin/api/backup', {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showAlert('success', data.message);
+                        loadBackups(); // Refresh backup list
+                    } else {
+                        showAlert('danger', data.message);
+                    }
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-download"></i> Create Backup Now';
+                })
+                .catch(error => {
+                    console.error('Error creating backup:', error);
+                    showAlert('danger', 'Error creating backup.');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-download"></i> Create Backup Now';
+                });
+            });
+        }
+    }
+    
+    // Load backups
+    function loadBackups() {
+        const backupsList = document.getElementById('backups-list');
+        if (!backupsList) return;
+        
+        fetch('/admin/api/backups')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.backups.length > 0) {
+                    let html = '<ul class="list-group">';
+                    data.backups.forEach(backup => {
+                        let typeIcon = 'fa-file';
+                        let typeColor = 'text-muted';
+                        if (backup.type === 'SQLite Database') {
+                            typeIcon = 'fa-database';
+                            typeColor = 'text-primary';
+                        } else if (backup.type === 'SQL Dump') {
+                            typeIcon = 'fa-file-code';
+                            typeColor = 'text-success';
+                        }
+                        
+                        html += `
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="fas ${typeIcon} ${typeColor} mr-2"></i>
+                                    <strong>${backup.filename}</strong>
+                                    <br>
+                                    <small class="text-muted">
+                                        Type: ${backup.type} | 
+                                        Created: ${new Date(backup.created).toLocaleString()} | 
+                                        Size: ${formatFileSize(backup.size)}
+                                    </small>
+                                </div>
+                                <div class="btn-group">
+                                    <a href="/admin/api/backup/${backup.filename}/download" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-download"></i> Download
+                                    </a>
+                                    ${backup.type === 'SQLite Database' ? `
+                                        <button class="btn btn-sm btn-outline-warning restore-backup-btn" data-filename="${backup.filename}">
+                                            <i class="fas fa-undo"></i> Restore
+                                        </button>
+                                    ` : ''}
+                                    <button class="btn btn-sm btn-outline-danger delete-backup-btn" data-filename="${backup.filename}">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </div>
+                            </li>
+                        `;
+                    });
+                    html += '</ul>';
+                    backupsList.innerHTML = html;
+                    
+                    // Attach delete and restore handlers
+                    document.querySelectorAll('.delete-backup-btn').forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            const filename = this.dataset.filename;
+                            if (confirm(`Delete backup "${filename}"?`)) {
+                                fetch(`/admin/api/backup/${filename}`, {
+                                    method: 'DELETE'
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        showAlert('success', data.message);
+                                        loadBackups();
+                                    } else {
+                                        showAlert('danger', data.message);
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error deleting backup:', error);
+                                    showAlert('danger', 'Error deleting backup.');
+                                });
+                            }
+                        });
+                    });
+                    
+                    document.querySelectorAll('.restore-backup-btn').forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            const filename = this.dataset.filename;
+                            if (confirm(`WARNING: This will replace the current database with the backup "${filename}". A backup of your current DB will be created first. Are you sure?`)) {
+                                fetch(`/admin/api/backup/${filename}/restore`, {
+                                    method: 'POST'
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        showAlert('success', data.message);
+                                        loadBackups();
+                                    } else {
+                                        showAlert('danger', data.message);
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error restoring backup:', error);
+                                    showAlert('danger', 'Error restoring backup.');
+                                });
+                            }
+                        });
+                    });
+                } else {
+                    backupsList.innerHTML = '<p class="text-muted">No backups yet. Click "Create Backup Now" to get started.</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Error loading backups:', error);
+                backupsList.innerHTML = '<p class="text-danger">Error loading backups.</p>';
+            });
+    }
+    
+    // Helper to format file size
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,256 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Artifact Submissions - CULTIA Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="h3 mb-4 text-gray-800">Artifact Submissions</h1>
+    
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h6 class="m-0 font-weight-bold text-primary">Pending & Reviewed Artifacts</h6>
+                <div class="btn-group">
+                    <a href="{{ url_for('artifact_submissions', status='pending') }}" class="btn btn-sm {% if not status_filter or status_filter == 'pending' %}btn-primary{% else %}btn-outline-primary{% endif %}">Pending</a>
+                    <a href="{{ url_for('artifact_submissions', status='approved') }}" class="btn btn-sm {% if status_filter == 'approved' %}btn-success{% else %}btn-outline-success{% endif %}">Approved</a>
+                    <a href="{{ url_for('artifact_submissions', status='rejected') }}" class="btn btn-sm {% if status_filter == 'rejected' %}btn-danger{% else %}btn-outline-danger{% endif %}">Rejected</a>
+                    <a href="{{ url_for('artifact_submissions') }}" class="btn btn-sm btn-outline-secondary">All</a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Artifact Name</th>
+                            <th>Submitter</th>
+                            <th>Tribe</th>
+                            <th>Method</th>
+                            <th>Status</th>
+                            <th>Submitted</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for submission in submissions %}
+                        <tr data-id="{{ submission.id }}">
+                            <td>{{ submission.id }}</td>
+                            <td>{{ submission.artifact_name }}</td>
+                            <td>{{ submission.first_name }} {{ submission.last_name }} ({{ submission.email }})</td>
+                            <td>{{ submission.tribe or 'N/A' }}</td>
+                            <td>{{ submission.digitization_method or 'N/A' }}</td>
+                            <td>
+                                {% if submission.status == 'pending' %}
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                {% elif submission.status == 'approved' %}
+                                    <span class="badge bg-success text-white">Approved</span>
+                                {% elif submission.status == 'rejected' %}
+                                    <span class="badge bg-danger text-white">Rejected</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ submission.created_at or 'N/A' }}</td>
+                            <td>
+                                <button class="btn btn-sm btn-info btn-view" data-id="{{ submission.id }}">View</button>
+                                {% if submission.status == 'pending' %}
+                                    <button class="btn btn-sm btn-success btn-approve" data-id="{{ submission.id }}">Approve</button>
+                                    <button class="btn btn-sm btn-danger btn-reject" data-id="{{ submission.id }}">Reject</button>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="8" class="text-center">No submissions found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Reject Modal -->
+<div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="rejectModalLabel">Reject Submission</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="rejectComment" class="form-label">Please provide a reason for rejection:</label>
+                    <textarea id="rejectComment" class="form-control" rows="4" placeholder="Enter feedback for the submitter..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button id="confirmRejectBtn" type="button" class="btn btn-danger">Reject</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- View Modal -->
+<div class="modal fade" id="viewModal" tabindex="-1" aria-labelledby="viewModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewModalTitle">View Artifact</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="viewModalBody">
+                <!-- Content will be loaded here -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+{% raw %}
+        let currentRejectId = null;
+        let rejectModalInstance, viewModalInstance;
+        
+        // Initialize modals when DOM loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Bootstrap 5 modals
+            const rejectModalEl = document.getElementById('rejectModal');
+            const viewModalEl = document.getElementById('viewModal');
+            
+            if (rejectModalEl) {
+                rejectModalInstance = new bootstrap.Modal(rejectModalEl);
+            }
+            if (viewModalEl) {
+                viewModalInstance = new bootstrap.Modal(viewModalEl);
+            }
+
+            // Add event listeners to buttons
+            document.querySelectorAll('.btn-view').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    viewSubmission(this.dataset.id);
+                });
+            });
+
+            document.querySelectorAll('.btn-approve').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    reviewSubmission(this.dataset.id, 'approved');
+                });
+            });
+
+            document.querySelectorAll('.btn-reject').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    showRejectModal(this.dataset.id);
+                });
+            });
+        });
+
+        function showRejectModal(id) {
+            currentRejectId = id;
+            document.getElementById('rejectComment').value = '';
+            if (rejectModalInstance) {
+                rejectModalInstance.show();
+            }
+        }
+
+        document.getElementById('confirmRejectBtn').addEventListener('click', function() {
+            const comment = document.getElementById('rejectComment').value;
+            if (!comment.trim()) {
+                alert('Please provide a rejection reason');
+                return;
+            }
+            reviewSubmission(currentRejectId, 'rejected', comment);
+        });
+
+        async function reviewSubmission(id, status, comment = '') {
+            try {
+                const response = await fetch(`/admin/api/submissions/artifacts/${id}/review`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        status: status,
+                        comment: comment
+                    })
+                });
+                
+                const data = await response.json();
+                if (data.success) {
+                    alert(data.message);
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred');
+            }
+        }
+
+        async function viewSubmission(id) {
+            try {
+                const response = await fetch(`/admin/api/submissions/artifacts/${id}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const a = data.submission;
+                    document.getElementById('viewModalTitle').textContent = `View Artifact: ${a.artifact_name}`;
+                    document.getElementById('viewModalBody').innerHTML = `
+                        <div class="mb-3">
+                            <strong>Submitter:</strong> ${a.first_name} ${a.last_name} (${a.email})
+                        </div>
+                        <div class="mb-3">
+                            <strong>Tribe:</strong> ${a.tribe || 'N/A'}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Digitization Method:</strong> ${a.digitization_method || 'N/A'}
+                        </div>
+                        <div class="mb-3">
+                            <strong>Status:</strong> 
+                            <span class="badge ${a.status === 'pending' ? 'bg-warning text-dark' : a.status === 'approved' ? 'bg-success text-white' : 'bg-danger text-white'}">
+                                ${a.status.charAt(0).toUpperCase() + a.status.slice(1)}
+                            </span>
+                        </div>
+                        <div class="mb-3">
+                            <strong>Description:</strong>
+                            <div style="background: #f8f9fa; padding: 1rem; border-radius: 0.5rem; white-space: pre-wrap;">
+                                ${a.description || 'No description provided'}
+                            </div>
+                        </div>
+                        ${a.metadata ? `
+                        <div class="mb-3">
+                            <strong>Metadata:</strong>
+                            <div style="background: #e8f5e9; padding: 1rem; border-radius: 0.5rem;">
+                                ${typeof a.metadata === 'string' ? a.metadata : JSON.stringify(a.metadata, null, 2)}
+                            </div>
+                        </div>` : ''}
+                        ${a.admin_comment ? `
+                        <div class="mb-3">
+                            <strong>Admin Comment:</strong>
+                            <div style="background: #fff3cd; padding: 1rem; border-radius: 0.5rem;">
+                                ${a.admin_comment}
+                            </div>
+                        </div>` : ''}
+                        <div class="text-muted small">
+                            Submitted: ${a.created_at ? new Date(a.created_at).toLocaleString() : 'N/A'}
+                        </div>
+                    `;
+                    if (viewModalInstance) {
+                        viewModalInstance.show();
+                    }
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while loading the submission');
+            }
+        }
+{% endraw %}
+    </script>
+{% endblock %}
