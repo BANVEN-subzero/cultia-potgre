@@ -822,15 +822,13 @@ def leaderboard():
             conn = get_db_connection()
             cursor = conn.cursor()
             
-            # Get users with their total points from achievements
-            # Only show users who have earned points (registered active users)
+            # Get users with their total points from achievements (including users with 0 points)
             cursor.execute('''
                 SELECT u.id, u.first_name, u.last_name, 
-                       SUM(a.points) as total_points
+                       COALESCE(SUM(a.points), 0) as total_points
                 FROM users u
-                JOIN achievements a ON u.id = a.user_id
+                LEFT JOIN achievements a ON u.id = a.user_id
                 GROUP BY u.id
-                HAVING total_points > 0
                 ORDER BY total_points DESC
                 LIMIT 10
             ''')
